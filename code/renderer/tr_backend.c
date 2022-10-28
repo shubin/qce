@@ -1097,6 +1097,46 @@ static const void *RB_StretchPic( const void *data ) {
 	return (const void *)(cmd + 1);
 }
 
+#if defined( QC )
+/*
+=============
+RB_DrawQuad
+=============
+*/
+static const void *RB_DrawQuad( const void *data ) {
+	const drawQuadCommand_t	*cmd;
+	shader_t *shader;
+
+	cmd = (const drawQuadCommand_t *)data;
+
+	shader = cmd->shader;
+	if ( shader != tess.shader ) {
+		if ( tess.numIndexes ) {
+			RB_EndSurface();
+		}
+		backEnd.currentEntity = &backEnd.entity2D;
+		RB_BeginSurface( shader, 0 );
+	}
+
+	VBO_UnBind();
+
+	if ( !backEnd.projection2D ) {
+		RB_SetGL2D();
+	}
+
+	//Check if it's time for BLOOM!
+	R_BloomScreen();
+
+	RB_AddQuadStamp3( 
+		cmd->x0, cmd->y0, cmd->s0, cmd->t0,
+		cmd->x1, cmd->y1, cmd->s1, cmd->t1,
+		cmd->x2, cmd->y2, cmd->s2, cmd->t2,
+		cmd->x3, cmd->y3, cmd->s3, cmd->t3,
+		backEnd.color2D );
+
+	return (const void *)(cmd + 1);
+}
+#endif
 
 #ifdef USE_PMLIGHT
 static void RB_LightingPass( void )
@@ -1565,6 +1605,11 @@ void RB_ExecuteRenderCommands( const void *data ) {
 		case RC_STRETCH_PIC:
 			data = RB_StretchPic( data );
 			break;
+#if defined( QC )
+		case RC_DRAW_QUAD:
+			data = RB_DrawQuad( data );
+			break;
+#endif
 		case RC_DRAW_SURFS:
 			data = RB_DrawSurfs( data );
 			break;

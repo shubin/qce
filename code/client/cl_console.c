@@ -98,6 +98,25 @@ void Con_ToggleConsole_f( void ) {
 }
 
 
+#if defined( QC )
+/*
+===================
+Con_ToggleMenu_f
+===================
+*/
+void Con_ToggleMenu_f( void ) {
+	int menu = -1;
+	if ( Cmd_Argc() == 1 ) {
+		CL_KeyEvent( K_ESCAPE, qtrue, Sys_Milliseconds() );
+		CL_KeyEvent( K_ESCAPE, qfalse, Sys_Milliseconds() );
+	}
+	menu = atoi( Cmd_Argv( 1 ) );
+	if ( menu >= 0 ) {
+		VM_Call( uivm, 1, UI_SET_ACTIVE_MENU, menu );
+	}
+}
+#endif
+
 /*
 ================
 Con_MessageMode_f
@@ -414,6 +433,9 @@ void Con_Init( void )
 	Cmd_AddCommand( "messagemode2", Con_MessageMode2_f );
 	Cmd_AddCommand( "messagemode3", Con_MessageMode3_f );
 	Cmd_AddCommand( "messagemode4", Con_MessageMode4_f );
+#if defined( QC )
+	Cmd_AddCommand("togglemenu", Con_ToggleMenu_f);
+#endif
 }
 
 

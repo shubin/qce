@@ -570,7 +570,15 @@ static void CL_FinishMove( usercmd_t *cmd ) {
 	int		i;
 
 	// copy the state that the cgame is currently sending
+#if defined( QC )
+	// letting the server know that the player uses zoom since it affects heavy machinegun
+	cmd->weapon = cl.cgameUserCmdValue & ~128;
+	if ( cl.cgameUserCmdValue & 128 ) {
+		cmd->buttons |= BUTTON_ZOOM;
+	}
+#else
 	cmd->weapon = cl.cgameUserCmdValue;
+#endif
 
 	// send the current server time so the amount of movement
 	// can be determined without allowing cheating
@@ -936,8 +944,13 @@ void CL_InitInput( void ) {
 	Cmd_AddCommand ("-button9", IN_Button9Up);
 	Cmd_AddCommand ("+button10", IN_Button10Down);
 	Cmd_AddCommand ("-button10", IN_Button10Up);
+#if defined( QC )
+	Cmd_AddCommand("+useability", IN_Button11Down);
+	Cmd_AddCommand("-useability", IN_Button11Up);
+#else
 	Cmd_AddCommand ("+button11", IN_Button11Down);
 	Cmd_AddCommand ("-button11", IN_Button11Up);
+#endif
 	Cmd_AddCommand ("+button12", IN_Button12Down);
 	Cmd_AddCommand ("-button12", IN_Button12Up);
 	Cmd_AddCommand ("+button13", IN_Button13Down);

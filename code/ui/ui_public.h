@@ -124,6 +124,9 @@ typedef enum {
 	// 1.32
 	UI_FS_SEEK,
 	UI_SET_PBCLSTATUS,
+#if defined(QC)
+	UI_R_DRAWQUAD,
+#endif
 
 	UI_FLOOR = 107,
 	UI_CEIL,

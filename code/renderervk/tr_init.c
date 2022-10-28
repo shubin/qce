@@ -2053,6 +2053,9 @@ refexport_t *GetRefAPI ( int apiVersion, refimport_t *rimp ) {
 
 	re.SetColor = RE_SetColor;
 	re.DrawStretchPic = RE_StretchPic;
+#if defined( QC )
+	re.DrawQuad = RE_DrawQuad;
+#endif
 	re.DrawStretchRaw = RE_StretchRaw;
 	re.UploadCinematic = RE_UploadCinematic;
 
@@ -2061,6 +2064,9 @@ refexport_t *GetRefAPI ( int apiVersion, refimport_t *rimp ) {
 	re.GetEntityToken = RE_GetEntityToken;
 	re.inPVS = R_inPVS;
 
+#if defined( QC )
+	re.GetAdvertisements = RE_GetAdvertisements;
+#endif
 	re.TakeVideoFrame = RE_TakeVideoFrame;
 	re.SetColorMappings = R_SetColorMappings;
 

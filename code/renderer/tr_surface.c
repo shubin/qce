@@ -193,6 +193,70 @@ void RB_AddQuadStamp2( float x, float y, float w, float h, float s1, float t1, f
 	tess.texCoords[0][numVerts + 3][1] = t2;
 }
 
+#if defined( QC )
+void RB_AddQuadStamp3(
+	float x0, float y0, float s0, float t0,
+	float x1, float y1, float s1, float t1,
+	float x2, float y2, float s2, float t2,
+	float x3, float y3, float s3, float t3,
+	color4ub_t color)
+{
+	int			numIndexes;
+	int			numVerts;
+
+	VBO_Flush();
+
+	RB_CHECKOVERFLOW( 4, 6 );
+
+	tess.surfType = SF_TRIANGLES;
+
+	numIndexes = tess.numIndexes;
+	numVerts = tess.numVertexes;
+
+	tess.numVertexes += 4;
+	tess.numIndexes += 6;
+
+	tess.indexes[numIndexes + 0] = numVerts + 3;
+	tess.indexes[numIndexes + 1] = numVerts + 0;
+	tess.indexes[numIndexes + 2] = numVerts + 2;
+	tess.indexes[numIndexes + 3] = numVerts + 2;
+	tess.indexes[numIndexes + 4] = numVerts + 0;
+	tess.indexes[numIndexes + 5] = numVerts + 1;
+
+	tess.vertexColors[numVerts + 0].u32 =
+		tess.vertexColors[numVerts + 1].u32 =
+		tess.vertexColors[numVerts + 2].u32 =
+		tess.vertexColors[numVerts + 3].u32 = color.u32;
+
+	tess.xyz[numVerts + 0][0] = x0;
+	tess.xyz[numVerts + 0][1] = y0;
+	tess.xyz[numVerts + 0][2] = 0;
+
+	tess.texCoords[0][numVerts + 0][0] = s0;
+	tess.texCoords[0][numVerts + 0][1] = t0;
+
+	tess.xyz[numVerts + 1][0] = x1;
+	tess.xyz[numVerts + 1][1] = y1;
+	tess.xyz[numVerts + 1][2] = 0;
+
+	tess.texCoords[0][numVerts + 1][0] = s1;
+	tess.texCoords[0][numVerts + 1][1] = t1;
+
+	tess.xyz[numVerts + 2][0] = x2;
+	tess.xyz[numVerts + 2][1] = y2;
+	tess.xyz[numVerts + 2][2] = 0;
+
+	tess.texCoords[0][numVerts + 2][0] = s2;
+	tess.texCoords[0][numVerts + 2][1] = t2;
+
+	tess.xyz[numVerts + 3][0] = x3;
+	tess.xyz[numVerts + 3][1] = y3;
+	tess.xyz[numVerts + 3][2] = 0;
+
+	tess.texCoords[0][numVerts + 3][0] = s3;
+	tess.texCoords[0][numVerts + 3][1] = t3;
+}
+#endif
 
 /*
 ==============

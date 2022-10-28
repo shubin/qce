@@ -3487,6 +3487,22 @@ static void CL_SetModel_f( void ) {
 }
 
 
+#if defined( QC )
+void CL_SetChampion_f(void) {
+	const char* arg;
+	char	name[256];
+
+	arg = Cmd_Argv(1);
+	if (arg[0]) {
+		Cvar_Set("champion", arg);
+	}
+	else {
+		Cvar_VariableStringBuffer("champion", name, sizeof(name));
+		Com_Printf("champion is set to %s\n", name);
+	}
+}
+#endif
+
 //===========================================================================================
 
 
@@ -3955,6 +3971,10 @@ void CL_Init( void ) {
 //	Cvar_Get ("teamtask", "0", CVAR_USERINFO );
 	Cvar_Get ("sex", "male", CVAR_USERINFO | CVAR_ARCHIVE_ND );
 	Cvar_Get ("cl_anonymous", "0", CVAR_USERINFO | CVAR_ARCHIVE_ND );
+#if defined( QC )
+	Cvar_Get ("champion", "ranger", CVAR_USERINFO | CVAR_ARCHIVE );
+	Cvar_Get ("starting_weapon", "mg", CVAR_USERINFO | CVAR_ARCHIVE );
+#endif
 
 	Cvar_Get ("password", "", CVAR_USERINFO | CVAR_NORESTART);
 	Cvar_Get ("cg_predictItems", "1", CVAR_USERINFO | CVAR_ARCHIVE );
@@ -3998,6 +4018,9 @@ void CL_Init( void ) {
 	Cmd_AddCommand ("stopvideo", CL_StopVideo_f );
 	Cmd_AddCommand ("serverinfo", CL_Serverinfo_f );
 	Cmd_AddCommand ("systeminfo", CL_Systeminfo_f );
+#if defined( QC )
+	Cmd_AddCommand( "champion", CL_SetChampion_f);
+#endif
 
 #ifdef USE_CURL
 	Cmd_AddCommand( "download", CL_Download_f );
@@ -4573,7 +4596,11 @@ static void CL_GlobalServers_f( void ) {
 	}
 	else
 #endif
+#if defined( QC )
+		sprintf(command, "getservers Quake3Champions %s", Cmd_Argv(2));
+#else
 		Com_sprintf( command, sizeof( command ), "getservers %s", Cmd_Argv(2) );
+#endif
 
 	for ( i = 3; i < count; i++ )
 	{
